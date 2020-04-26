@@ -1,0 +1,26 @@
+title: MyTestHomeAssistant
+views:
+
+  - title: Глагне
+    icon: mdi:home-assistant
+
+    cards:
+
+      - type: vertical-stack
+        cards:
+
+        - type: entities
+          show_header_toggle: false
+          entities:
+            - entity: sensor.time
+              name: Времечко
+              icon: mdi:clock-outline
+            - entity: sensor.date
+              name: Date
+              icon: mdi:calendar-check-outline
+
+
+  - title: Погодка
+    icon: mdi:weather-partly-snowy-rainy
+
+    
