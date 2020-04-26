@@ -1,11 +1,13 @@
 homeassistant:
   
-  latitude: !secret latitude
-  longitude: !secret longitude
-  elevation: !secret altitude
+  latitude: !secret includes/latitude
+  longitude: !secret includes/longitude
+  elevation: !secret includes/altitude
   unit_system: metric
   time_zone: Europe/Moscow
-  #customize: !include customize.yaml
+  customize: !include includes/customize.yaml
+
+
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
@@ -18,7 +20,9 @@ default_config:
 tts:
   - platform: google_translate
 
-group: !include groups.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
+group: !include includes/groups.yaml
+automation: !include includes/automations.yaml
+script: !include includes/scripts.yaml
+scene: !include includes/scenes.yaml
+
+sensor: !include_dir_merge_list includes/sensor
