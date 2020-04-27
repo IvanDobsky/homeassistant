@@ -1,0 +1,13 @@
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'
+#binary_sensor:
+#  - platform: rpi_gpio
+#    #name: MotionSensor1
+#    ports: 
+#      7: Sensor HC-SR501
+#    invert_logic: false
+    
+

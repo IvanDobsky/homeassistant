@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 title: MyTestHomeAssistant
 views:
 
@@ -23,3 +22,13 @@ views:
 
   - title: Погодка
     icon: mdi:weather-partly-snowy-rainy
+
+  - title: Видеонаблюдение
+    icon: mdi:cctv
+
+    cards: 
+
+      - type: glance
+        title: SensorPanel
+        entities:
+          -  binary_sensor.sensor_hc_sr501

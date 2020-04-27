@@ -4,7 +4,7 @@ homeassistant:
   longitude: !secret longitude
   elevation: !secret altitude
   unit_system: metric
-  time_zone: Europe/Moscow
+  time_zone: !secret time_zone
   customize: !include includes/customize.yaml
 
 
@@ -29,3 +29,11 @@ script: !include includes/scripts.yaml
 scene: !include includes/scenes.yaml
 
 sensor: !include_dir_merge_list includes/sensor
+
+binary_sensor:
+  - platform: rpi_gpio
+    #name: MotionSensor
+    ports:
+      7: Sensor HC-SR501
+    invert_logic: false
+    
