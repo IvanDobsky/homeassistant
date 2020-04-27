@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 title: MyTestHomeAssistant
 views:
 
@@ -22,5 +23,3 @@ views:
 
   - title: Погодка
     icon: mdi:weather-partly-snowy-rainy
-
-    
