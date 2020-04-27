@@ -16,16 +16,6 @@ default_config:
 # http:
 #   base_url: example.duckdns.org:8123
 
-
-
-
-# Hui-pizda-provoda
-
-
-
-
-
-
 lovelace:
   mode: yaml
 
