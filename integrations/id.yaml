@@ -1,0 +1,4 @@
+sensor:
+  - platform: file
+    name: ID
+    file_path: /home/homeassistant/.homeassistant/.ID_LONG

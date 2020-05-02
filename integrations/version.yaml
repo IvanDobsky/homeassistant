@@ -1,0 +1,8 @@
+sensor:
+  - platform: version
+    name: Current Version
+    source: local
+
+  - platform: version
+    name: Available Version
+    source: pypi

@@ -1,39 +1,57 @@
+# mike
 homeassistant:
-  
+  name: !secret nameid
   latitude: !secret latitude
   longitude: !secret longitude
-  elevation: !secret altitude
+  elevation: !secret elevation
   unit_system: metric
-  time_zone: !secret time_zone
-  customize: !include includes/customize.yaml
+  time_zone: !secret time_local
+  packages: !include_dir_named integrations
+  whitelist_external_dirs:
+    - !secret home
+    - !secret data
 
+# Default config alternative
+config:
+frontend:
+sun:
+map:
+mobile_app:
+ssdp:
+zeroconf:
+updater:
+system_health:
 
+# Access config
+http:
+  base_url: !secret http_url
+  server_port: !secret http_port
+  ip_ban_enabled: True
+  login_attempts_threshold: 10
+# Person config
+person:
 
-# Configure a default setup of Home Assistant (frontend, api, etc)
-default_config:
+# History config
+history:
+  exclude:
+    domains:
+      - automation
+      - weblink
+      - updater
+    entities:
+      - sensor.last_boot
+      - sensor.date
 
-# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-# http:
-#   base_url: example.duckdns.org:8123
-
-lovelace:
-  mode: yaml
-
-# Text to speech
-tts:
-  - platform: google_translate
-
-group: !include includes/groups.yaml
-automation: !include includes/automations.yaml
-script: !include includes/scripts.yaml
-scene: !include includes/scenes.yaml
-
-sensor: !include_dir_merge_list includes/sensor
-
-binary_sensor:
-  - platform: rpi_gpio
-    #name: MotionSensor
-    ports:
-      7: Sensor HC-SR501
-    invert_logic: false
-    
+# Logbook config
+logbook:
+  exclude:
+    entities:
+      - sensor.last_boot
+      - sensor.date
+    domains:
+      - sun
+      - weblink
+# Logger config
+logger:
+  default: info
+  logs:

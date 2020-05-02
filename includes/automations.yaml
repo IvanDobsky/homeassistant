@@ -1,0 +1,3 @@
+#- alias: relay_toggle
+#  initial_state: false
+#  trigger:

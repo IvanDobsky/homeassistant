@@ -1,0 +1,27 @@
+sensor:
+  - platform: rest
+    name: Watchdog Monitoring
+    resource: https://futurisa.online:5049/api/states/sensor.watchdog_control
+    value_template: '{{ value_json.state }}'
+    headers:
+      Authorization: !secret watchdog_bearer_token
+      content-Type: application/json
+
+automation:
+  - alias: 'Watchdog Monitoring'
+    initial_state: 'on'
+    trigger:
+      - platform: time_pattern
+        minutes: "/5"
+    condition:
+      - condition: state
+        entity_id: 'sensor.watchdog_monitoring'
+        state: 'unavailable'
+    action:
+      - service: telegram_bot.send_message
+        data:
+          disable_notification: no
+          target: !secret ALL
+          parse_mode: markdown
+          message: >
+            *CRITITCAL:* WATCHDOG IS NOT AVAILABLE!!!

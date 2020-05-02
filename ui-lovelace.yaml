@@ -31,4 +31,28 @@ views:
       - type: glance
         title: SensorPanel
         entities:
-          -  binary_sensor.sensor_hc_sr501
+          - binary_sensor.sensor_hc_sr501
+      - type: button
+        name: Relay_Button
+        initial_state: false
+        tap_action:
+          - action: call-service
+            entity_id: binary_sensor.relay
+
+          
+
+        
+
+      #- type: picture-glance
+      #  title: Camera
+      #  entities:
+      #    - camera.raspberry_pi_camera
+      #    - binary_sensor.sensor_hc_sr501
+      #  camera_image: camera.raspberry_pi_camera
+
+      #- type: picture-entity
+      # entity: camera.raspberry_pi_camera
+      #  camera_view: live
+
+
+

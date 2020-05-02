@@ -1,0 +1,77 @@
+input_boolean:
+  backup:
+
+input_text:
+  latest_backup:
+    name: Latest Backup
+
+folder_watcher:
+  - folder: /home/homeassistant/.homeassistant
+    patterns:
+      - '*.yaml'
+      - '*.txt'
+      - '*.sh'
+
+automation:
+  - alias: config changed
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: folder_watcher
+        event_data:
+          event_type: created
+      - platform: event
+        event_type: folder_watcher
+        event_data:
+          event_type: modified
+      - platform: event
+        event_type: folder_watcher
+        event_data:
+          event_type: moved
+      - platform: event
+        event_type: folder_watcher
+        event_data:
+          event_type: deleted
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.backup
+
+  - alias: push backup
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      platform: time_pattern
+      minutes: '/5'
+    condition:
+      - condition: state
+        entity_id: 'input_boolean.backup'
+        state: 'on'
+    action:
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.latest_backup
+          value: "{{ now().strftime('%H%M-%d-%m-%y')}}"
+      - service: telegram_bot.send_message
+        data:
+          target: !secret ADMIN
+          disable_notification: yes
+          parse_mode: markdown
+          message: >
+            Uploading backup *{{ states('input_text.latest_backup') }}*
+      - service: shell_command.git_add
+      - service: shell_command.git_commit
+      - service: shell_command.git_push
+      - service: shell_command.personal_config_folder
+      - service: shell_command.personal_config_upload_secrets
+      - service: shell_command.personal_config_upload_storage
+      - service: input_boolean.turn_off
+        entity_id: 'input_boolean.backup'
+
+shell_command:
+  git_add: 'git -C "/home/homeassistant/.homeassistant/" add .'
+  git_commit: 'git -C "/home/homeassistant/.homeassistant/" commit -m {{ states.input_text.latest_backup.state }}' 
+  git_push: 'git -C "/home/homeassistant/.homeassistant/" push'
+  personal_config_folder: 'ssh homeassistant@futurisa.online << EOF mkdir clients/{{ states("sensor.id") }}/{{ states("input_text.latest_backup") }}'
+  personal_config_upload_secrets: 'scp /home/homeassistant/.homeassistant/secrets.yaml homeassistant@futurisa.online:/home/homeassistant/clients/{{ states("sensor.id") }}/{{ states("input_text.latest_backup") }}/secrets.yaml'
+  personal_config_upload_storage: 'scp -r /home/homeassistant/.homeassistant/.storage homeassistant@futurisa.online:/home/homeassistant/clients/{{ states("sensor.id") }}/{{ states("input_text.latest_backup") }}/.storage'

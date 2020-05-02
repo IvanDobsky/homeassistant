@@ -1,0 +1,154 @@
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_api_key
+    allowed_chat_ids:
+      - !secret ZAXE88
+      - !secret ZAXS03
+      - !secret ABXA78
+
+automation:
+  - alias: ha started
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: telegram_bot.send_message
+        data_template:
+          disable_notification: yes
+          target: !secret ALL
+          parse_mode: markdown
+          message: >
+            *Futurisa Assistant Started!*
+            
+
+            ID: *{{ states('sensor.id') }}*
+
+            Watchdog Monitoring: *{{ states('sensor.watchdog_monitoring') }}*
+
+            Current version: *{{ states('sensor.current_version')}}*
+
+            Available version: *{{ states('sensor.available_version')}}*
+
+            Last commit: *{{ states('sensor.last_commit')}}*
+
+            VPN IP : 
+
+            Use /start if you wish send commands.
+
+  - alias: ha stopped
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: homeassistant
+        event: shutdown
+    action:
+      - service: telegram_bot.send_message
+        data:
+          disable_notification: yes
+          target: !secret ALL
+          parse_mode: markdown
+          message: >
+            *Home Assistant service stopped!*
+
+  - alias: telegram keyboard basic
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/start'
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/exit'
+    action:
+      - service: telegram_bot.send_message
+        data_template:
+          parse_mode: html
+          target: '{{ trigger.event.data.user_id }}'
+          message: "Please select command."
+          keyboard:
+            - '/alarm, /video, /say, /media'
+            - '/home, /gps, /light, /weather'
+            - '/service, /reminder, /extra, /sos'
+
+  - alias: telegram keyboard video
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/video'
+    action:
+      - service: telegram_bot.send_message
+        data_template:
+          parse_mode: html
+          target: '{{ trigger.event.data.user_id }}'
+          message: "You can request 10+10 seconds video from any source"
+          keyboard:
+            - '/01, /02, /03, /04'
+            - '/05, /06. /07, /08'
+            - '/exit'
+
+  - alias: telegram keyboard service
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/service'
+    action:
+      - service: telegram_bot.send_message
+        data_template:
+          parse_mode: html
+          target: '{{ trigger.event.data.user_id }}'
+          message: "Hello! SASdsadsad ds as d1!! $)44"
+          keyboard:
+            - '/ping, /restart, /reboot'
+            - '/test, /addxiaomi'
+            - '/exit'
+
+  - alias: telegram ping
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/ping'
+    action:
+      - service: telegram_bot.send_message
+        data_template:
+          disable_notification: yes
+          target: '{{ trigger.event.data.user_id }}'
+          parse_mode: markdown
+          message: "*POnG!*"
+
+  - alias: telegram restart
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/restart'
+    action:
+      - service: script.turn_on
+        entity_id: script.initial_restart
+
+  - alias: telegram reboot
+    initial_state: 'on'
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: telegram_command
+        event_data:
+          command: '/reboot'
+    action:
+      - service: script.turn_on
+        entity_id: script.initial_reboot
